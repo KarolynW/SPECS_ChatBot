@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UoH TEL-chatGPT</title>
+    <!-- Link to Bootstrap stylesheet -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Custom styles -->
+    <style>
+        body {
+            background-color: #36393F;
+            color: #ffffff;
+        }
+
+        .card {
+            background-color: #2C2F33;
+            border: none;
+        }
+
+        #chat-window {
+            height: 600px;
+            overflow-y: scroll;
+            border: 1px solid #202225;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #input-form {
+            margin-top: 10px;
+        }
+
+        .user-message {
+            background-color: #7289DA;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .bot-message {
+            background-color: #999;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h1>UoH TEL-chatGPT</h1>
+                    </div>
+                    <div class="card-body">
+                        <div id="chat-window">
+                            <ul id="message-list">
+                            </ul>
+                        </div>
+
+                        <div id="input-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" id="user-input" class="form-control" placeholder="Type your message...">
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-primary">Send</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the jQuery library (version 3.5.1) from a Content Delivery Network (CDN) -->
+    <!-- jQuery is a popular JavaScript library that simplifies tasks such as HTML document manipulation, event handling, and AJAX -->
+    <!-- The library is loaded from the jQuery CDN (https://code.jquery.com/jquery-3.5.1.min.js) -->
+    <!-- The ".min.js" file extension indicates that the file is minified, which means it has been compressed to reduce file size and loading time -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Include the Bootstrap JavaScript library (version 4.3.1) from a Content Delivery Network (CDN) -->
+    <!-- Bootstrap is a widely-used framework that provides pre-built CSS classes, components, and JavaScript plugins for creating responsive and modern web designs -->
+    <!-- The library is loaded from the Bootstrap CDN (https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js) -->
+    <!-- The ".min.js" file extension indicates that the file is minified, which means it has been compressed to reduce file size and loading time -->
+    <!-- Note: Bootstrap's JavaScript library requires jQuery as a dependency, so jQuery must be included before Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // handle form submission
+            $('#input-form').submit(function (event) {
+                event.preventDefault();
+        
+                // get user input
+                var userInput = $('#user-input').val();
+        
+                $.ajax({
+                    url: '/chat',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({'input': userInput}),
+                    success: function (data) {
+                        // This section of code handles the response from the server.
+                        // It processes the 'messages' data, which contains information about user input and bot responses.
+                        
+                        // Extract the 'messages' array from the server data
+                        var messages = data['messages'];
+                        // Initialize variables to store the last user input and the last bot response
+                        var lastUserInput, lastBotResponse;
+                        // Loop through all the messages in the 'messages' array
+                        for (var i = 0; i < messages.length; i++) {
+                            // Get the current message object from the array
+                            var message = messages[i];
+                            // Extract the role (either 'user' or 'bot') and content of the current message
+                            var role = message['role'];
+                            var content = message['content'];
+                            // Determine the appropriate CSS class for the message based on the role
+                            var messageClass = role === 'user' ? 'user-message' : 'bot-message';
+                            // If the message is from the user, update the last user input
+                            if (role === 'user') {
+                                // update last user input
+                                lastUserInput = content.split("Context")[0].trim();
+                            } else {
+                                // update last bot response
+                                lastBotResponse = content;
+                            }
+                        }
+                    
+                        // append last user input and bot response to message list
+                        if (lastUserInput) {
+                            $('#message-list').append('<li class="user-message">' + lastUserInput + '</li>');
+                        }
+                        if (lastBotResponse) {
+                            $('#message-list').append('<li class="bot-message">' + lastBotResponse + '</li>');
+                        }
+                    
+                        // scroll to bottom of chat window
+                        $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
+                    
+                        // clear input field
+                        $('#user-input').val('');
+                    }                   
+                });
+             
+            });
+        });
+        
+    </script>
+</body>
+</html>
