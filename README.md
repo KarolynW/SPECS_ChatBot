@@ -1,7 +1,7 @@
 # SPECS_ChatBot Demo
 Repo for the ChatBot Demonstrated in the session 29/03/2023
 
-Our TEL-chatGPT is a Flask-based web application that provides an AI-powered chatbot for Technology Enhanced Learning (TEL) at the University of Hertfordshire. It uses OpenAI's GPT-3.5 Turbo model (configurable for GPT-4) to assist users with queries related to educational technology and teaching and learning concepts.
+Our TEL-chatGPT demonstration is a Flask-based web application that provides an AI-powered chatbot for Technology Enhanced Learning (TEL) at the University of Hertfordshire. It uses OpenAI's GPT-3.5 Turbo model (configurable for GPT-4) to assist users with queries related to educational technology and teaching and learning concepts.
 
 ## Features
 
